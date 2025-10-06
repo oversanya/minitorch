@@ -34,7 +34,7 @@ class Module:
         # TODO: Implement for Task 0.4.
         # raise NotImplementedError('Need to implement for Task 0.4')
         self.training = True
-        for m in self.modules:
+        for m in self.modules():
             m.train()
 
     def eval(self) -> None:
