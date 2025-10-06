@@ -42,7 +42,7 @@ class Module:
         # TODO: Implement for Task 0.4.
         # raise NotImplementedError('Need to implement for Task 0.4')
         self.training = False
-        for m in self.modules:
+        for m in self.modules():
             m.eval()
 
     def get_params_(self, named = False):
