@@ -45,12 +45,25 @@ class Module:
         for m in self.modules():
             m.eval()
 
-    def get_params_(self, named = False):
+    def get_params_(self, named=False):
         params = []
-        for m in self.modules():
-            params += m.get_params_(named)
-        for name, p in self._parameters.items():
-            params.append((name, p) if named else p)
+        
+        for module_name, module_obj in self._modules.items():
+            child_params = module_obj.get_params_(named=True)
+            
+            for param_name, param_obj in child_params:
+                full_name = f"{module_name}.{param_name}"
+                if named:
+                    params.append((full_name, param_obj))
+                else:
+                    params.append(param_obj)
+
+        for param_name, param_obj in self._parameters.items():
+            if named:
+                params.append((param_name, param_obj))
+            else:
+                params.append(param_obj)
+                
         return params
     
 
