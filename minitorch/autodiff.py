@@ -23,7 +23,11 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
     # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    # raise NotImplementedError('Need to implement for Task 1.1')
+    dvals = list(vals)
+    dvals[arg] += epsilon
+    dvals = tuple(dvals)
+    return (f(*dvals) - f(*vals))/ epsilon
 
 
 variable_count = 1
@@ -62,7 +66,23 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # raise NotImplementedError('Need to implement for Task 1.4')
+    order = []
+    visited = set()
+    def visit(v: Variable):
+        if v.unique_id in visited:
+            return
+        visited.add(v.unique_id)
+        if not v.is_leaf():
+            for parent in v.parents:
+                visit(parent)
+
+        if not v.is_constant():
+            order.append(v)
+        
+    visit(variable)
+    return reversed(order)
+
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -77,7 +97,22 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # raise NotImplementedError('Need to implement for Task 1.4')
+    sorted_vars = topological_sort(variable)
+    gradients = {variable.unique_id: deriv}
+
+    for v in sorted_vars:
+        d = gradients[v.unique_id]
+        if v.is_leaf():
+            v.accumulate_derivative(d)
+        else:
+            parent_gradients = v.chain_rule(d)
+            for parent, grad in parent_gradients:
+                if parent.unique_id in gradients:
+                    gradients[parent.unique_id] += grad
+                else:
+                    gradients[parent.unique_id] = grad
+
 
 
 @dataclass
