@@ -49,7 +49,7 @@ class Module:
         params = []
         for m in self.modules():
             params += m.get_params_(named)
-        for name, p in self._parameters:
+        for name, p in self._parameters.items():
             params.append((name, p) if named else p)
         return params
     
